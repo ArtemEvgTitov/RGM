@@ -2,7 +2,10 @@
 <html lang="ru">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes"
+    />
     <title>Таймер до 1 июля 2027</title>
     <style>
       * {
@@ -16,58 +19,72 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        min-height: 100vh;
+        min-height: 100dvh;
         background: linear-gradient(135deg, #0b1a2e, #1a3a5c);
         color: #fff;
         text-align: center;
-        padding: 20px;
+        padding: 16px;
+        /* безопасный отступ для очень узких экранов */
       }
 
       .container {
         background: rgba(255, 255, 255, 0.08);
         backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
         border-radius: 40px;
-        padding: 50px 40px;
+        padding: 40px 28px;
         box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
         border: 1px solid rgba(255, 255, 255, 0.1);
         max-width: 700px;
         width: 100%;
+        transition: padding 0.2s ease;
       }
 
       h1 {
         font-size: 2.2rem;
         font-weight: 300;
         letter-spacing: 2px;
-        margin-bottom: 10px;
+        margin-bottom: 4px;
         text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        word-break: break-word;
       }
 
       .subtitle {
         font-size: 1.1rem;
         opacity: 0.7;
-        margin-bottom: 30px;
+        margin-bottom: 28px;
         letter-spacing: 1px;
       }
 
       .timer {
         display: flex;
-        justify-content: space-around;
-        gap: 10px;
+        justify-content: center;
+        align-items: stretch;
+        gap: 12px;
         flex-wrap: wrap;
       }
 
       .time-block {
         background: rgba(0, 0, 0, 0.25);
         border-radius: 20px;
-        padding: 15px 10px;
-        min-width: 80px;
-        flex: 1 0 auto;
+        padding: 14px 8px;
+        min-width: 70px;
+        flex: 1 1 0;
+        max-width: 130px;
         box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.3);
         border-bottom: 3px solid #ffb347;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        transition:
+          padding 0.2s ease,
+          min-width 0.2s ease;
       }
 
       .time-block span {
         display: block;
+        line-height: 1.2;
       }
 
       .number {
@@ -79,29 +96,48 @@
         -webkit-text-fill-color: transparent;
         background-clip: text;
         line-height: 1.2;
+        /* запас для старых браузеров */
+        color: #ffb347;
+      }
+
+      /* fallback для браузеров без background-clip */
+      @supports not (background-clip: text) {
+        .number {
+          background: none;
+          -webkit-text-fill-color: #ffb347;
+          color: #ffb347;
+        }
       }
 
       .label {
-        font-size: 0.9rem;
+        font-size: 0.85rem;
         text-transform: uppercase;
         letter-spacing: 2px;
         opacity: 0.7;
-        margin-top: 5px;
+        margin-top: 4px;
       }
 
       .message {
-        margin-top: 30px;
-        font-size: 1.3rem;
+        margin-top: 28px;
+        font-size: 1.2rem;
         font-weight: 300;
         opacity: 0;
         min-height: 2.5rem;
         transition: all 0.3s ease;
+        padding: 0 4px;
+        word-break: break-word;
       }
 
       .message.expired {
         color: #ffb347;
         font-weight: 500;
         animation: pulse 1.5s infinite;
+        opacity: 1;
+      }
+
+      /* сообщение по умолчанию показываем плавно */
+      .message:not(.expired) {
+        opacity: 0.85;
       }
 
       @keyframes pulse {
@@ -119,20 +155,241 @@
         }
       }
 
-      @media (max-width: 500px) {
+      /* ===== АДАПТАЦИЯ ДЛЯ ПЛАНШЕТОВ И НЕБОЛЬШИХ ЭКРАНОВ ===== */
+      @media (max-width: 700px) {
         .container {
-          padding: 30px 15px;
-        }
-        .number {
-          font-size: 2.8rem;
+          padding: 32px 20px;
+          border-radius: 32px;
         }
         .time-block {
           min-width: 60px;
-          padding: 10px 5px;
+          padding: 12px 6px;
+        }
+        .number {
+          font-size: 3.2rem;
+        }
+        .label {
+          font-size: 0.75rem;
+          letter-spacing: 1.5px;
         }
         h1 {
-          font-size: 1.6rem;
+          font-size: 1.9rem;
         }
+        .subtitle {
+          font-size: 1rem;
+          margin-bottom: 24px;
+        }
+        .message {
+          font-size: 1.1rem;
+          margin-top: 24px;
+        }
+      }
+
+      /* ===== ОСНОВНАЯ АДАПТАЦИЯ ДЛЯ СМАРТФОНОВ ===== */
+      @media (max-width: 500px) {
+        body {
+          padding: 12px;
+          align-items: center;
+        }
+
+        .container {
+          padding: 24px 14px;
+          border-radius: 28px;
+        }
+
+        h1 {
+          font-size: 1.5rem;
+          letter-spacing: 1px;
+        }
+
+        .subtitle {
+          font-size: 0.9rem;
+          margin-bottom: 20px;
+          letter-spacing: 0.5px;
+        }
+
+        .timer {
+          gap: 8px;
+        }
+
+        .time-block {
+          min-width: 50px;
+          padding: 10px 4px;
+          border-radius: 16px;
+          border-bottom-width: 2.5px;
+          flex: 1 1 0;
+        }
+
+        .number {
+          font-size: 2.4rem;
+          letter-spacing: 1px;
+        }
+
+        .label {
+          font-size: 0.6rem;
+          letter-spacing: 1px;
+          margin-top: 2px;
+        }
+
+        .message {
+          font-size: 0.95rem;
+          margin-top: 20px;
+          min-height: 2rem;
+        }
+      }
+
+      /* ===== ОЧЕНЬ МАЛЕНЬКИЕ ЭКРАНЫ (до 380px) ===== */
+      @media (max-width: 380px) {
+        body {
+          padding: 8px;
+        }
+
+        .container {
+          padding: 18px 10px;
+          border-radius: 22px;
+        }
+
+        h1 {
+          font-size: 1.2rem;
+        }
+
+        .subtitle {
+          font-size: 0.75rem;
+          margin-bottom: 16px;
+        }
+
+        .timer {
+          gap: 5px;
+        }
+
+        .time-block {
+          min-width: 40px;
+          padding: 8px 3px;
+          border-radius: 12px;
+          border-bottom-width: 2px;
+        }
+
+        .number {
+          font-size: 1.8rem;
+          letter-spacing: 0px;
+        }
+
+        .label {
+          font-size: 0.5rem;
+          letter-spacing: 0.5px;
+          margin-top: 1px;
+        }
+
+        .message {
+          font-size: 0.8rem;
+          margin-top: 16px;
+          min-height: 1.6rem;
+        }
+      }
+
+      /* ===== ОРИЕНТАЦИЯ ЛАНДШАФТ (горизонтальный режим) ===== */
+      @media (max-height: 500px) and (orientation: landscape) {
+        body {
+          padding: 10px;
+          align-items: center;
+        }
+
+        .container {
+          padding: 18px 20px;
+          border-radius: 28px;
+          max-width: 600px;
+        }
+
+        h1 {
+          font-size: 1.4rem;
+          margin-bottom: 2px;
+        }
+
+        .subtitle {
+          font-size: 0.8rem;
+          margin-bottom: 14px;
+        }
+
+        .timer {
+          gap: 8px;
+        }
+
+        .time-block {
+          min-width: 50px;
+          padding: 8px 4px;
+          border-radius: 14px;
+        }
+
+        .number {
+          font-size: 2.2rem;
+        }
+
+        .label {
+          font-size: 0.55rem;
+          letter-spacing: 1px;
+        }
+
+        .message {
+          font-size: 0.9rem;
+          margin-top: 14px;
+          min-height: 1.8rem;
+        }
+      }
+
+      /* ===== ТЕМНАЯ ТЕМА ДЛЯ БРАУЗЕРОВ (необязательно, но приятно) ===== */
+      @media (prefers-color-scheme: dark) {
+        body {
+          background: linear-gradient(135deg, #091520, #142f4a);
+        }
+        .container {
+          background: rgba(255, 255, 255, 0.06);
+          border-color: rgba(255, 255, 255, 0.05);
+        }
+        .time-block {
+          background: rgba(0, 0, 0, 0.35);
+        }
+      }
+
+      /* ===== АДАПТАЦИЯ ДЛЯ ЭКРАНОВ С ВЫСОКОЙ ПЛОТНОСТЬЮ ===== */
+      @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+        .number {
+          /* более чёткий текст на retina */
+          font-weight: 700;
+        }
+      }
+
+      /* ===== ПОДДЕРЖКА SAFARI (чтобы backdrop-filter работал корректно) ===== */
+      @supports (-webkit-backdrop-filter: blur(8px)) {
+        .container {
+          -webkit-backdrop-filter: blur(8px);
+        }
+      }
+
+      /* ===== УЛУЧШЕННАЯ ТАЧАБЕЛЬНОСТЬ ===== */
+      @media (hover: none) and (pointer: coarse) {
+        /* для сенсорных экранов ничего не меняем, оставляем как есть */
+        .time-block {
+          /* небольшая подсветка для тактильности */
+          transition: background 0.15s ease;
+        }
+        .time-block:active {
+          background: rgba(255, 255, 255, 0.08);
+        }
+      }
+
+      /* ===== ПОДДЕРЖКА СТАРЫХ БРАУЗЕРОВ (flex-wrap запас) ===== */
+      .timer {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-flex-wrap: wrap;
+        -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+      }
+      .time-block {
+        -webkit-box-flex: 1;
+        -ms-flex: 1 1 0px;
+        flex: 1 1 0;
       }
     </style>
   </head>
@@ -166,26 +423,22 @@
     <script>
       (function () {
         // Целевая дата: 1 июля 2027 года, 00:00:00 (локальное время)
-        const targetDate = new Date("July 1, 2027 00:00:00").getTime();
+        var targetDate = new Date("July 1, 2027 00:00:00").getTime();
 
-        // Элементы для отображения
-        const daysEl = document.getElementById("days");
-        const hoursEl = document.getElementById("hours");
-        const minutesEl = document.getElementById("minutes");
-        const secondsEl = document.getElementById("seconds");
-        const messageEl = document.getElementById("message");
+        var daysEl = document.getElementById("days");
+        var hoursEl = document.getElementById("hours");
+        var minutesEl = document.getElementById("minutes");
+        var secondsEl = document.getElementById("seconds");
+        var messageEl = document.getElementById("message");
 
-        // Функция добавления ведущего нуля
         function padZero(num) {
           return String(num).padStart(2, "0");
         }
 
-        // Основная функция обновления таймера
         function updateTimer() {
-          const now = Date.now();
-          let diff = targetDate - now;
+          var now = Date.now();
+          var diff = targetDate - now;
 
-          // Если время вышло
           if (diff <= 0) {
             daysEl.textContent = "00";
             hoursEl.textContent = "00";
@@ -196,33 +449,35 @@
             return;
           }
 
-          // Убираем класс expired, если он был
           messageEl.classList.remove("expired");
 
-          // Расчёт дней, часов, минут, секунд
-          const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+          var days = Math.floor(diff / (1000 * 60 * 60 * 24));
           diff -= days * (1000 * 60 * 60 * 24);
-          const hours = Math.floor(diff / (1000 * 60 * 60));
+          var hours = Math.floor(diff / (1000 * 60 * 60));
           diff -= hours * (1000 * 60 * 60);
-          const minutes = Math.floor(diff / (1000 * 60));
+          var minutes = Math.floor(diff / (1000 * 60));
           diff -= minutes * (1000 * 60);
-          const seconds = Math.floor(diff / 1000);
+          var seconds = Math.floor(diff / 1000);
 
-          // Отображение
           daysEl.textContent = padZero(days);
           hoursEl.textContent = padZero(hours);
           minutesEl.textContent = padZero(minutes);
           secondsEl.textContent = padZero(seconds);
 
-          // Сообщение с оставшимся временем (для красоты)
-          let msg = `Осталось ${days} дн. ${hours} ч. ${minutes} мин. ${seconds} сек.`;
+          var msg =
+            "Осталось " +
+            days +
+            " дн. " +
+            hours +
+            " ч. " +
+            minutes +
+            " мин. " +
+            seconds +
+            " сек.";
           messageEl.textContent = msg;
         }
 
-        // Первый запуск
         updateTimer();
-
-        // Обновление каждую секунду
         setInterval(updateTimer, 1000);
       })();
     </script>
